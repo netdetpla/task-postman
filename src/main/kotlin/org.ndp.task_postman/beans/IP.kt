@@ -1,4 +1,4 @@
-package org.ndp.geoip_hanler.beans
+package org.ndp.task_postman.beans
 
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.int
@@ -11,4 +11,8 @@ object IP : Table<Nothing>("ip") {
     val osVersion by text("os_version")
     val hardware by text("hardware")
     val lnglatID by int("lnglat_id")
+    val ipTestFlag by int("ip_test_flag")
+    val ipResolveFlag by int("ip_resolve_flag")
+    val portScanFlag by int("port_scan_flag")
+    val udpScanFlag by int("udp_scan_flag")
 }

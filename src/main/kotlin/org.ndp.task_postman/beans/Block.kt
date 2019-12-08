@@ -1,4 +1,4 @@
-package org.ndp.geoip_hanler.beans
+package org.ndp.task_postman.beans
 
 import me.liuwj.ktorm.schema.*
 
