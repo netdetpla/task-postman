@@ -26,7 +26,7 @@ fun postTask(
         tag: String,
         taskName: String,
         priority: String,
-        vararg ps: String
+        ps: List<String>
 ) {
     val params = ArrayList<NameValuePair>()
     params.add(BasicNameValuePair("image-name", imageName))
@@ -52,7 +52,7 @@ fun postTask(
 
 fun postIPTestTask(limit: Int) {
     Database.Companion.connect(
-            "jdbc:mysql://192.168.118.120:3306/ndp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+            "jdbc:mysql://192.168.75.120:3306/ndp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
             "com.mysql.jdbc.Driver",
             "root",
             "password"
@@ -70,20 +70,22 @@ fun postIPTestTask(limit: Int) {
     save.writeText((offset + limit).toString())
     for (t in target) {
         val iNet4 = t[Block.network]!!
+        val l = ArrayList<String>()
+        l.add(iNet4)
         postTask(
                 "http://192.168.118.120:8080/task",
                 "ip-test",
                 "1.02",
                 "test$iNet4",
                 "5",
-                iNet4
+                l
         )
     }
 }
 
 fun postPortScanTask(limit: Int, ports: String) {
     Database.Companion.connect(
-            "jdbc:mysql://192.168.118.120:3306/ndp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
+            "jdbc:mysql://192.168.75.120:3306/ndp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC",
             "com.mysql.jdbc.Driver",
             "root",
             "password"
@@ -99,29 +101,61 @@ fun postPortScanTask(limit: Int, ports: String) {
         strIPSet.add(t[IP.ip]!!)
     }
     val ips = strIPSet.joinToString(",")
+    val l = ArrayList<String>()
+    l.add(ips)
+    l.add(ports)
     postTask(
             "http://192.168.118.120:8080/task",
             "port-scan",
             "1.01",
             "test",
             "5",
-            ips,
-            ports
+            l
     )
     IP.batchUpdate {
-                for (i in intIPSet) {
-                    item {
-                        it.portScanFlag to 1
-                        where { it.id eq i }
-                    }
-                }
+        for (i in intIPSet) {
+            item {
+                it.portScanFlag to 1
+                where { it.id eq i }
             }
+        }
+    }
+}
+
+fun postPageCrawlTask() {
+    val l = ArrayList<String>()
+    l.add("http://www.baidu.com/")
+    l.add("")
+    postTask(
+            "http://192.168.75.120:8080/task",
+            "page-crawl",
+            "1.01",
+            "test-page",
+            "5",
+            l
+    )
+}
+
+fun postUrlCrawlTask() {
+    val l = ArrayList<String>()
+    l.add("www.hao123.com,www.google.com,www.baidu.com")
+    l.add("")
+    postTask(
+            "http://192.168.75.120:8080/task",
+            "url-crawl",
+            "1.01",
+            "test-page",
+            "5",
+            l
+    )
 }
 
 fun main(args: Array<String>) {
     when (args[0]) {
         "ip-test" -> postIPTestTask(Integer.parseInt(args[1]))
         "port-scan" -> postPortScanTask(Integer.parseInt(args[1]), args[2])
+        "page-crawl" -> postPageCrawlTask()
+        "url-crawl" -> postUrlCrawlTask()
         else -> println("nothing to do")
     }
 }
