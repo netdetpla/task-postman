@@ -13,13 +13,13 @@ import java.net.URI
 import java.nio.charset.StandardCharsets
 
 abstract class BasePost {
-    val postUrl = Settings.setting["serverUrl"] as String
-    val taskName = Settings.setting["defaultTaskName"] as String
-    val priority = Settings.setting["defaultPriority"] as String
+    protected val postUrl = Settings.setting["serverUrl"] as String
+    protected val taskName = Settings.setting["defaultTaskName"] as String
+    protected val priority = Settings.setting["defaultPriority"] as String
 
     abstract fun post()
 
-    fun post(
+    protected fun post(
             url: String,
             imageName: String,
             tag: String,

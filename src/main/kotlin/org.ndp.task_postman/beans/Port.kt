@@ -2,7 +2,6 @@ package org.ndp.task_postman.beans
 
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.int
-import me.liuwj.ktorm.schema.text
 import me.liuwj.ktorm.schema.varchar
 
 object Port : Table<Nothing>("port") {
